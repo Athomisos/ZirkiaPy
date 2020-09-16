@@ -3,7 +3,7 @@ import json, os, requests, time
 
 class Application:
     def __init__(self, AppName, DisplayName, DevName):
-        self.AppName = AppName
+        self.AppName = AppName.upper()
         self.DisplayName = DisplayName
         self.DevName = DevName
         self.UrlSSE3 = self.Get_Url()
@@ -16,7 +16,7 @@ class Application:
             return data
 
     #--------------------------------------------------------------------------------------------
-    #  Get ip/port of Steelseries GameSence™
+    #  Get ip/port of Steelseries Engine 3™
     def Get_Url(self):
         if(platform == "darwin"):
             PathToJson = "/Library/Application Support/SteelSeries Engine 3/coreProps.json"
@@ -29,7 +29,7 @@ class Application:
         return  Url
 
     #--------------------------------------------------------------------------------------------
-    #  Get ip/port of Steelseries GameSence™
+    #  Get ip/port of Steelseries Engine 3™
     def Get_Encrypt_Url(self):
         if(platform == "darwin"):
             PathToJson = "/Library/Application Support/SteelSeries Engine 3/coreProps.json"
@@ -42,13 +42,7 @@ class Application:
         return  Url
 
     #--------------------------------------------------------------------------------------------
-    #  Send json to Steelseries GameSence™ with a Post request
-    def Post_Request(self, URL, Json):
-        response = requests.post(URL, json=Json)
-        return(response)
-
-    #--------------------------------------------------------------------------------------------
-    #  Register App
+    #  Register App IN your Steelseries Engine 3™
     def Register_GAME(self, TimerLength):
         UrlEngine = self.UrlSSE3
         Json = "{ "
@@ -58,9 +52,19 @@ class Application:
         "\"developer\": \""+self.DevName+"\","
         "\"deinitialize_timer_length_ms\" : "+TimerLength+""
         "}"
-        return(self.Post_Request(UrlEngine+"/game_metadata", Json))
+        return(Post_Request(UrlEngine+"/game_metadata", Json))
 
     def Event_Register(self, EventName, MinValue, MaxValue, idIcon, Optional):
         Event_Json = "{"
         "\"game\": "+self.AppName+", \"event\": "+EventName+" , \"min_value\": "+MinValue+", \"max_value\": "+MaxValue+", \"icon_id\": "+idIcon+", \"value_optional\": "+Optional+"}"
-        return(self.Post_Request(self.UrlSSE3+"/register_game_event", Event_Json))
+        return(Post_Request(self.UrlSSE3+"/register_game_event", Event_Json))
+
+#class event:
+
+#--------------------------------------------------------------------------------------------
+#  Send json to Steelseries Engine 3™ with a Post request
+def Post_Request(URL, Json):
+    response = requests.post(URL, json=Json)
+    if(response.status_code != 200):
+        response.raise_for_status()
+    return()
